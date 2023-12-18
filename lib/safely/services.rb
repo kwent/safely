@@ -20,10 +20,10 @@ module Safely
       end
 
       if defined?(Datadog::Tracing)
-        span = Datadog::Tracing.trace("safely")
-        span.set_tags(info)
-        span.set_error(e)
-        span.finish
+        Datadog::Tracing.trace("safely") do |span|
+          span.set_tags(info)
+          span.set_error(e)
+        end
       end
 
       ExceptionNotifier.notify_exception(e, data: info) if defined?(ExceptionNotifier)
